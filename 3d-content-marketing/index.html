@@ -1,0 +1,492 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="./img/favicon.ico" type="image/x-icon" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>3D Elements of Content Marketing Periodic Table - MarketingKode</title>
+		<!-- CDN Hosted Dependencies -->
+		<!-- <script src="http://anijs.github.io/lib/anijs/anijs.js"></script> -->
+		<style>
+			html, body {
+				height: 100%;
+			}
+
+			body {
+				background-color: #262928;
+				margin: 0;
+				font-family: Helvetica, sans-serif;;
+				overflow: hidden;
+			}
+
+			a {
+				color: #000000;
+			}
+
+			#info {
+				position: absolute;
+				width: 100%;
+				color: #000000;
+				padding: 5px;
+				font-family: Monospace;
+				font-size: 13px;
+				font-weight: bold;
+				text-align: center;
+				z-index: 1;
+			}
+
+			#menu {
+				position: absolute;
+				bottom: 20px;
+				width: 100%;
+				text-align: center;
+			}
+
+			.element {
+				width: 120px;
+				height: 160px;
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+				border: 1px solid rgba(127,255,255,0.25);
+				text-align: center;
+				cursor: default;
+			}
+
+			.element:hover {
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+				border: 2px solid rgba(127,255,255,0.75);
+			}
+
+				.element .number {
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+
+				.element .symbol {
+					position: absolute;
+					top: 40px;
+					left: 0px;
+					right: 0px;
+					font-size: 60px;
+					font-weight: bold;
+					color: rgba(255,255,255,0.75);
+					text-shadow: 0 0 10px rgba(0,255,255,0.95);
+				}
+
+				.element .details {
+					position: absolute;
+					bottom: 15px;
+					left: 0px;
+					right: 0px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+
+			button {
+				color: rgba(127,255,255,0.75);
+				background: transparent;
+				outline: 1px solid rgba(127,255,255,0.75);
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,0.75);
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Peridoic Table Libraries -->
+		<script src="js/three.min.js"></script>
+		<script src="js/lib/tween.min.js"></script>
+		<script src="js/lib/TrackballControls.js"></script>
+		<script src="js/lib/CSS3DRenderer.js"></script>
+		<!-- Trianglify Library -->
+		<script src="js/lib/d3.v3.min.js"></script>
+		<script src="js/lib/trianglify-0.1.5.min.js"></script>
+		<!-- <script src="js/lib/socialite.min.js"></script> -->
+
+		<div id="container"></div>
+		<div id="info"> The Elements of <a href="http://marketingkode.com" target="_blank">Content Marketing</a> &#9679; <a href="http://blog.marketingkode.com/" target="_blank">MarketingKode</a></div>
+		<div id="menu">
+			<button id="table">Table</button>
+			<button id="sphere">Sphere</button>
+			<button id="helix">Helix</button>
+			<button id="grid">Grid</button>
+		</div>
+
+		<script>
+
+			var table = [
+				"Cs", "Content", "Strategy", 1, 1,
+				"Tf", "Traffic", "", 18, 1,
+				"Ar", "Article","", 1, 2,
+				"P", "Print", "", 2, 2,
+				"Tw", "Twitter", "", 13, 2,
+				"Ig", "Imgur", "", 14, 2,
+				"Ps", "Partner", "Sites", 15, 2,
+				"Is", "Instagram", "", 16, 2,
+				"Do", "Downloads", "", 17, 2,
+				"Le", "Leads", "", 18, 2,
+				"V", "Video", "", 1, 3,
+				"Em", "Email", "", 2, 3,
+				"Yo", "YouTube", "", 13, 3,
+				"Hn", "Hacker", "News", 14, 3,
+				"Mi", "Micro", "Sites", 15, 3,
+				"Tu", "Tumblr", "", 16, 3,
+				"Rm", "Reputation", "Metrics", 17, 3,
+				"Br", "Branding", "39.948", 18, 3,
+				"Im", "Images", "", 1, 4,
+				"Wb", "Webinar", "", 2, 4,
+				"Ho", "How-To", "", 3, 4,
+				"Qz", "Quizzes", "", 4, 4,
+				"Qu", "Question", "Based", 5, 4,
+				"Ga", "Galleries", "", 6, 4,
+				"Mm", "Mind", "Maps", 7, 4,
+				"Pc", "Product", "Based", 8, 4,
+				"Sv", "Surveys", "", 9, 4,
+				"In", "Inspiration", "", 10, 4,
+				"Tr", "Trends", "", 11, 4,
+				"Cm", "Competitions", "", 12, 4,
+				"Re", "Reddit", "", 13, 4,
+				"Of", "Offline", "Media", 14, 4,
+				"Pi", "Pinterest", "", 15, 4,
+				"Fl", "Flickr", "", 16, 4,
+				"Nv", "New", "Visitors", 17, 4,
+				"Sa", "Sales", "", 18, 4,
+				"Ev", "Events", "", 1, 5,
+				"Pr", "Press", "Release", 2, 5,
+				"Iv", "Interview", "", 3, 5,
+				"Re", "Reviews", "", 4, 5,
+				"Rs", "Resources", "", 5, 5,
+				"Ti", "Time", "Saving", 6, 5,
+				"Bp", "Best", "Practice", 7, 5,
+				"Fr", "Frameworks", "", 8, 5,
+				"Tm", "Testimonials", "", 9, 5,
+				"An", "Analysis", "", 10, 5,
+				"Op", "Opinion", "", 11, 5,
+				"Ch", "Checklists", "", 12, 5,
+				"Bl", "Blogs", "", 13, 5,
+				"Li", "Linkedin", "", 14, 5,
+				"Fo", "Forums", "", 15, 5,
+				"Pv", "Pageviews", "", 16, 5,
+				"Cl", "Cost Per", "Lead", 17, 5,
+				"S", "Search", "", 18, 5,
+				"Gm", "Game", "", 1, 6,
+				"Ap", "App", "", 2, 6,
+				"El", "E-learning", "", 3, 6,
+				"Fu", "Funny", "", 4, 9,
+				"Sx", "Sexy", "", 5, 9,
+				"Sg", "Shocking", "", 6, 9,
+				"Mv", "Moving", "", 7, 9,
+				"Cv", "Controversial", "", 8, 9,
+				"Co", "Cool", "", 9, 9,
+				"Il", "Illuminating", "", 10, 9,
+				"Eg", "Engagement", "Metrics", 11, 9,
+				"Sm", "Social", "Metrics", 12, 9,
+				"Nm", "New", "Members", 13, 9,
+				"Sc", "Search", "Metrics", 14, 9,
+				"Rm", "Retention", "Metrics", 15, 9,
+				"Dg", "Demographic", "Metrics", 16, 9,
+				"Br", "Bounce", "Rate", 17, 9,
+				"En", "Engagement", "", 18, 9,
+				"As", "Ask", "Experts", 4, 6,
+				"Pd", "Productivity", "", 5, 6,
+				"Lb", "Link", "Bait", 6, 6,
+				"Hi", "Hivemind", "Based", 7, 6,
+				"Co", "Compilations", "", 8, 6,
+				"Ca", "Case", "Studies", 9, 6,
+				"Dm", "Demos", "", 10, 6,
+				"Fi", "Fiction", "", 11, 6,
+				"Gf", "Gifs", "", 12, 6,
+				"Fa", "Facebook", "", 13, 6,
+				"Gp", "Google+", "", 14, 6,
+				"Sl", "Slide", "Share", 15, 6,
+				"Bm", "Brand", "Metrics", 16, 6,
+				"Pm", "PR", "Metrics", 17, 6,
+				"Me", "Members", "", 18, 6,
+				"To", "Tools", "", 1, 7,
+				"Eb", "eBook", "", 2, 7,
+				"Vi", "Visualisation", "", 3, 7,
+				"Aw", "Cute", "", 4, 10,
+				"Up", "Uplifting", "", 5, 10,
+				"Zg", "Zeitgiest", "", 6, 10,
+				"Se", "Search", "Queries", 7, 10,
+				"Se", "Search", "Optimization", 8, 10,
+				"Ce", "Copy", "Editing", 9, 10,
+				"Fm", "Formatting", "", 10, 10,
+				"Hd", "Headline", "Optimization", 11, 10,
+				"Tv", "Tone of", "Voice", 12, 10,
+				"Gd", "Brand", "Guidelines", 13, 10,
+				"Do", "Device", "Optimization", 14, 10,
+				"Fc", "Fact", "Checking", 15, 10,
+				"Cd", "Credit", "Sources", 16, 10,
+				"Ct", "Calls To", "Action", 17, 10,
+				"Fd", "Invite", "Feedback", 18, 10,
+				"Ex", "Experiments", "", 4, 7,
+				"Gl", "Glossaries", "", 5, 7,
+				"Da", "Data", "", 6, 7,
+				"Te", "Templates", "", 7, 7,
+				"Bg", "Beginner", "Guides", 8, 7,
+				"Rc", "Research", "", 9, 7,
+				"St", "Stats", "", 10, 7,
+				"Nj", "Newsjacking", "", 11, 7,
+				"We", "Website", "", 12, 7,
+				"Vm", "Vimeo", "", 13, 7,
+				"Vn", "Vine", "", 14, 7,
+				"Ad", "Advertising", "", 15, 7,
+				"Uv", "Unique", "Visitors", 16, 7,
+				"Am", "Acquisition", "Metrics", 17, 7,
+				"Sh", "Shares", "", 18, 7
+			];
+
+			var camera, scene, renderer;
+			var controls;
+
+			var objects = [];
+			var targets = { table: [], sphere: [], helix: [], grid: [] };
+
+			init();
+			animate();
+
+			function init() {
+
+				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 3000;
+
+				scene = new THREE.Scene();
+
+				// table
+
+				for ( var i = 0; i < table.length; i += 5 ) {
+
+					var element = document.createElement( 'div' );
+					element.className = 'element';
+					element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+
+					var number = document.createElement( 'div' );
+					number.className = 'number';
+					number.textContent = (i/5) + 1;
+					element.appendChild( number );
+
+					var symbol = document.createElement( 'div' );
+					symbol.className = 'symbol';
+					symbol.textContent = table[ i ];
+					element.appendChild( symbol );
+
+					var details = document.createElement( 'div' );
+					details.className = 'details';
+					details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
+					element.appendChild( details );
+
+					var object = new THREE.CSS3DObject( element );
+					object.position.x = Math.random() * 4000 - 2000;
+					object.position.y = Math.random() * 4000 - 2000;
+					object.position.z = Math.random() * 4000 - 2000;
+					scene.add( object );
+
+					objects.push( object );
+
+					//
+
+					var object = new THREE.Object3D();
+					object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
+					object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
+
+					targets.table.push( object );
+
+				}
+
+				// sphere
+
+				var vector = new THREE.Vector3();
+
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+					var phi = Math.acos( -1 + ( 2 * i ) / l );
+					var theta = Math.sqrt( l * Math.PI ) * phi;
+
+					var object = new THREE.Object3D();
+
+					object.position.x = 800 * Math.cos( theta ) * Math.sin( phi );
+					object.position.y = 800 * Math.sin( theta ) * Math.sin( phi );
+					object.position.z = 800 * Math.cos( phi );
+
+					vector.copy( object.position ).multiplyScalar( 2 );
+
+					object.lookAt( vector );
+
+					targets.sphere.push( object );
+
+				}
+
+				// helix
+
+				var vector = new THREE.Vector3();
+
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+					var phi = i * 0.175 + Math.PI;
+
+					var object = new THREE.Object3D();
+
+					object.position.x = 900 * Math.sin( phi );
+					object.position.y = - ( i * 8 ) + 450;
+					object.position.z = 900 * Math.cos( phi );
+
+					vector.x = object.position.x * 2;
+					vector.y = object.position.y;
+					vector.z = object.position.z * 2;
+
+					object.lookAt( vector );
+
+					targets.helix.push( object );
+
+				}
+
+				// grid
+
+				for ( var i = 0; i < objects.length; i ++ ) {
+
+					var object = new THREE.Object3D();
+
+					object.position.x = ( ( i % 5 ) * 400 ) - 800;
+					object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+					object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+
+					targets.grid.push( object );
+
+				}
+
+				//
+
+				renderer = new THREE.CSS3DRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.domElement.style.position = 'absolute';
+				document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+				//
+
+				controls = new THREE.TrackballControls( camera, renderer.domElement );
+				controls.rotateSpeed = 0.5;
+				controls.minDistance = 500;
+				controls.maxDistance = 6000;
+				controls.addEventListener( 'change', render );
+
+				var button = document.getElementById( 'table' );
+				button.addEventListener( 'click', function ( event ) {
+
+					transform( targets.table, 2000 );
+
+				}, false );
+
+				var button = document.getElementById( 'sphere' );
+				button.addEventListener( 'click', function ( event ) {
+
+					transform( targets.sphere, 2000 );
+
+				}, false );
+
+				var button = document.getElementById( 'helix' );
+				button.addEventListener( 'click', function ( event ) {
+
+					transform( targets.helix, 2000 );
+
+				}, false );
+
+				var button = document.getElementById( 'grid' );
+				button.addEventListener( 'click', function ( event ) {
+
+					transform( targets.grid, 2000 );
+
+				}, false );
+
+				transform( targets.table, 2000 );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function transform( targets, duration ) {
+
+				TWEEN.removeAll();
+
+				for ( var i = 0; i < objects.length; i ++ ) {
+
+					var object = objects[ i ];
+					var target = targets[ i ];
+
+					new TWEEN.Tween( object.position )
+						.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+						.easing( TWEEN.Easing.Exponential.InOut )
+						.start();
+
+					new TWEEN.Tween( object.rotation )
+						.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+						.easing( TWEEN.Easing.Exponential.InOut )
+						.start();
+
+				}
+
+				new TWEEN.Tween( this )
+					.to( {}, duration * 2 )
+					.onUpdate( render )
+					.start();
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				render();
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				TWEEN.update();
+
+				controls.update();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+		<!-- Load Trianglify -->
+		<script>
+			var t = new Trianglify();
+			var pattern = t.generate(document.body.clientWidth, document.body.clientHeight);
+			document.body.setAttribute('style', 'background-image: '+pattern.dataUrl);
+		</script>
+		<script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-58675139-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+	</body>
+</html>
